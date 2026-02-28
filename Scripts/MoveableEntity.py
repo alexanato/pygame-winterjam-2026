@@ -1,14 +1,15 @@
 import pygame
 
 
-class Entity(pygame.sprite.Sprite):
-    def __init__(self, game,x, y, img, speed, groups):
+class MoveableEntity(pygame.sprite.Sprite):
+    def __init__(self, game, scene, x, y, img, speed, groups):
         super().__init__(groups)
         self.game = game
+        self.scene = scene
         self.image = img
         self.rect = self.image.get_rect(topleft=(x, y))
 
-        self.pos = pygame.Vector2(self.rect.center)
+        self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.speed = speed
         self.direction = pygame.Vector2(0, 0)
 
@@ -18,21 +19,24 @@ class Entity(pygame.sprite.Sprite):
         self.obstacle = obstacles
 
     def move(self, dt):
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
         collision_type = self.check_collision(self.direction)
 
         if collision_type != 1:
-            self.rect.x += self.direction.x * self.speed * dt
-
+            self.pos.x += self.direction.x * self.speed * dt
         if collision_type != -1:
-            self.rect.y += self.direction.y * self.speed * dt
+            self.pos.y += self.direction.y * self.speed * dt
 
-    def check_collision(self,direction):
+        # Keep rect in sync with pos so collision detection stays accurate
+        self.rect.centerx = int(self.pos.x)
+        self.rect.centery = int(self.pos.y)
+
+    def check_collision(self, direction):
         if not self.obstacle:
-            return
+            return 0
 
         for sprite in self.obstacle:
+            if sprite is self:
+                continue
             if sprite.rect.colliderect(self.rect):
                 rect_x = self.rect.copy()
                 rect_x.x += direction.x

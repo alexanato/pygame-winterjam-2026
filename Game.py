@@ -1,15 +1,16 @@
 import pygame
 import os
+from Scenes.GameScene import GameScene
+from Scenes.Scene import Scene
 class Game():
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((1280, 720), pygame.SCALED | pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
-
         self.stack = []
 
         self.sprites = self.load_sprites()
-
+        self.push_scene(GameScene)
         self.run()
 
     def push_scene(self, scene_class):

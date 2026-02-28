@@ -7,7 +7,8 @@ class Scene:
         self.game = game
         self.screen = game.screen
         self.sub_scenes = []
-
+        self.pressed_keys = set()
+        self.pressed_mouse_buttons = set()
         self.ui_manager = pygame_gui.UIManager(self.game.screen.get_size())
 
         self.is_visible = True
@@ -35,14 +36,23 @@ class Scene:
 
         if self.ui_manager.process_events(event):
             return True
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.on_click(event.pos, event.button):
-                return True
-        elif event.type in (pygame.KEYDOWN, pygame.KEYUP):
-            if self.on_key(event.key, event.type == pygame.KEYDOWN):
+        if event.type == pygame.KEYDOWN:
+            self.pressed_keys.add(event.key)
+            if self.on_key(event.key, True):
                 return True
 
+        elif event.type == pygame.KEYUP:
+            self.pressed_keys.discard(event.key)
+            if self.on_key(event.key, False):
+                return True
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            self.pressed_mouse_buttons.add(event.button)
+            if self.on_click(event.pos, event.button, is_down=True):
+                return True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.pressed_mouse_buttons.discard(event.button)
+            if self.on_click(event.pos, event.button, is_down=False):
+                return True
         return self.block_events
 
     def update(self, dt):
@@ -78,8 +88,13 @@ class Scene:
     def on_render(self):
         pass
 
-    def on_click(self, pos, button):
+    def on_click(self, pos, button,is_down):
         return False
 
     def on_key(self, key, is_down):
         return False
+    def is_pressed(self,key):
+        return key in self.pressed_keys
+
+    def is_mouse_held(self, button):  # 1 = Links, 2 = Mitte, 3 = Rechts
+        return button in self.pressed_mouse_buttons
