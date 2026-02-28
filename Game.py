@@ -3,35 +3,50 @@ import os
 class Game():
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption("pyjump")
-        self.screen = pygame.display.set_mode((1280 , 720 ), pygame.SCALED | pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((1280, 720), pygame.SCALED | pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
-        self.dt = self.clock.tick() / 1000
+
+        self.stack = []
+
         self.sprites = self.load_sprites()
+
         self.run()
 
+    def push_scene(self, scene_class):
+        new_scene = scene_class(self)
+        new_scene.start()
+        self.stack.append(new_scene)
+
+    def pop_scene(self):
+        if len(self.stack) > 1:
+            self.stack[-1].exit()
+            self.stack.pop()
+        else:
+            pygame.quit()
+            exit()
+
     def run(self):
-        self.start()
-        running = True
-        while running:
-            for event in pygame.event.get():
+        while True:
+            dt = self.clock.tick(60) / 1000.0
+            events = pygame.event.get()
+
+            for event in events:
                 if event.type == pygame.QUIT:
-                    running = False
-            self.dt = self.clock.tick() / 1000
+                    pygame.quit()
+                    return
+
+                if self.stack:
+                    self.stack[-1].handle_event(event)
+
+            if self.stack:
+                self.stack[-1].update(dt)
+
             self.screen.fill((30, 30, 30))
-            self.render()
-            self.update()
-            pygame.display.update()
 
-    def start(self):
-        pass
+            for scene in self.stack:
+                scene.render()
 
-    def update(self):
-        pass
-
-    def render(self):
-        self.screen.blit(self.sprites["player"],(100,199))
-        pass
+            pygame.display.flip()
     def load_sprites(self):
         sprites = {}
         for x in os.listdir("./sprites"):
