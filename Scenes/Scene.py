@@ -15,8 +15,8 @@ class Scene:
         self.is_active = True
         self.block_events = False
 
-    def push_scene(self, scene_class):
-        new_scene = scene_class(self.game)
+    def push_scene(self, scene_class, *args, **kwargs):
+        new_scene = scene_class(self.game, *args, **kwargs)
         new_scene.start()
         self.sub_scenes.append(new_scene)
         return new_scene
@@ -35,6 +35,7 @@ class Scene:
                 return True
 
         if self.ui_manager.process_events(event):
+            self.handle_ui_event(event)
             return True
         if event.type == pygame.KEYDOWN:
             self.pressed_keys.add(event.key)
@@ -98,3 +99,5 @@ class Scene:
 
     def is_mouse_held(self, button):  # 1 = Links, 2 = Mitte, 3 = Rechts
         return button in self.pressed_mouse_buttons
+    def handle_ui_event(self, event):
+        pass

@@ -2,6 +2,11 @@ import pygame
 
 from  Scripts.MoveableEntity import *
 class Player(MoveableEntity):
+    def __init__(self, game, scene, x, y, img, speed, groups):
+        super().__init__(game,scene,x,y,img,speed,groups)
+        self.light_radius = 1000
+        self.light_intensity =10
+        self.light_color = (247, 55, 24)
     def update(self, dt):
         super().update(dt)
         if self.scene.is_pressed(pygame.K_UP) or self.scene.is_pressed(pygame.K_w):
