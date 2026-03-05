@@ -2,8 +2,8 @@ import pygame
 
 
 class SpriteSheet:
-    def __init__(self, path: str, frame_width: int, frame_height: int):
-        self._sheet = pygame.image.load(path).convert_alpha()
+    def __init__(self, sheet: pygame.Surface, frame_width: int, frame_height: int):
+        self._sheet = sheet
         self.frame_width = frame_width
         self.frame_height = frame_height
 

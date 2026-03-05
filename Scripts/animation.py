@@ -5,9 +5,9 @@ from dataclasses import dataclass
 @dataclass
 class Animation:
     frames: list[pygame.Surface]
-    durations: list[int] | int  # ms pro Frame, oder ein Wert für alle int oder list
+    durations: list[int] | int | float  # ms pro Frame, oder ein Wert für alle
     loop: bool = True
 
     def __post_init__(self):
-        if isinstance(self.durations, int):
-            self.durations = [self.durations] * len(self.frames)
+        if not isinstance(self.durations, list):
+            self.durations = [int(self.durations)] * len(self.frames)

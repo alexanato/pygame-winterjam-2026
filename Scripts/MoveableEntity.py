@@ -1,9 +1,9 @@
 import pygame
+from Scripts.animated_sprite import *
 
-
-class MoveableEntity(pygame.sprite.Sprite):
+class MoveableEntity(AnimatedSprite):
     def __init__(self, game, scene, x, y, img, speed, groups):
-        super().__init__(groups)
+        super().__init__(groups,game)
         self.game = game
         self.scene = scene
         self.image = img
@@ -49,4 +49,5 @@ class MoveableEntity(pygame.sprite.Sprite):
         return 0
 
     def update(self, dt):
+        super().update(dt)
         self.move(dt)

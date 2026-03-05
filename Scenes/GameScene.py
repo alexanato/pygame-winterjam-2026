@@ -9,7 +9,7 @@ class GameScene(Scene):
         self.camera = Camera(game,1)
         self.enemies = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
-        self.player = Player(game,self,500,200,game.sprites["player"],400,self.all_sprites)
+        self.player = Player(game,self,self.all_sprites)
         self.entitys = [MoveableEntity(game,self,300,100,self.game.sprites ["player"],30,self.all_sprites)]
         self.camera.bind(self.player)
         self.push_scene(LightScene,light_sources=self.all_sprites)
