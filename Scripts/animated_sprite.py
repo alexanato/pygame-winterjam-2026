@@ -41,7 +41,6 @@ class AnimatedSprite(pygame.sprite.Sprite):
         while self.elapsed >= self.current.durations[self.index]:
             self.elapsed -= self.current.durations[self.index]
             self.index += 1
-            print(self.current.frames)
             if self.index >= len(self.current.frames):
                 if self.current.loop:
                     self.index = 0
